@@ -332,9 +332,17 @@ copyuvm(pde_t *pgdir, uint sz)
 
     if(flags & PTE_S)
     { 
-      // Since it is a shared page , no need to alloc and map 
-      // it again it . Let the loop continue as is .
-      cprintf("Shared memory : %p !\n", (char*)P2V(pa)); 
+      // Since it is a shared page , no need to alloc
+      // Just map the memory that was allocated previously
+      // to new process page directory ! .
+
+      cprintf("Shared memory : %p !\n", (char*)P2V(pa));
+      
+      if(mappages(d, (void*)i, PGSIZE, V2P(P2V(pa)), flags) < 0) {
+        // Dont try to free shared memory rather just destroy this child !
+        goto bad;
+      }
+
     }
     else
     {
