@@ -10,10 +10,11 @@ struct cpu {
   struct proc *proc;           // The process running on this cpu or null
 };
 
-
+// Mutex type that hols a test byte to
+// indicate status of a lock
 struct mutex_t
 {
-  int dummy;	
+  char testByte;	
 };
 
 extern struct cpu cpus[NCPU];

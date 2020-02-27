@@ -43,6 +43,8 @@ free(void *ap)
   freep = p;
 }
 
+
+
 static Header*
 morecore(uint nu)
 {

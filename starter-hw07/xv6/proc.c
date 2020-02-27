@@ -20,23 +20,6 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
-// Mutext apis
-int mutex_init(struct mutex_t* lock)
-{
-  return 0;	
-}
-
-int mutex_lock(struct mutex_t* lock)
-{
-  return 0;	
-}
-
-int mutex_unlock(struct mutex_t* lock)
-{
-  return 0;	
-}
-
-
 void
 pinit(void)
 {
@@ -170,6 +153,44 @@ userinit(void)
   release(&ptable.lock);
 }
 
+#define NULL 0
+
+// Mutext apis
+int mutex_init(struct mutex_t* lock)
+{
+  if(lock == NULL)
+  {
+    return -1;
+  }
+
+  __atomic_clear((char*)lock,__ATOMIC_RELAXED);
+  return 0;	
+}
+
+// Test a byte for it to be set , if it is not set
+// then set and proceed . If set then spin your self in a loop
+// unless other process clears it
+int mutex_lock(struct mutex_t* lock)
+{
+  while(__atomic_test_and_set((char*)lock,__ATOMIC_RELAXED))
+  {
+    // Keep on spinning in a loop since some other process has acquired
+    // same look  
+  }	  
+  return 0;	
+}
+
+int mutex_unlock(struct mutex_t* lock)
+{
+  if(lock == NULL)
+  {
+    return -1;
+  }
+
+  __atomic_clear((char*)lock,__ATOMIC_RELAXED);
+  return 0;	
+}
+
 // Grow current process's memory by n bytes.
 // Return 0 on success, -1 on failure.
 int
@@ -249,9 +270,9 @@ extern void* spalloc();
 void* 
 spalloc()
 {
- struct proc *curproc = myproc();
+  struct proc *curproc = myproc();
 
- pde_t* pde;
+  pde_t* pde;
   pte_t* pte;
 
   int va_idx = curproc->sz;
@@ -261,7 +282,8 @@ spalloc()
   cprintf("spalloc-pde : 0x%x \n" , pde);
 
   pte = walkpgdir(curproc->pgdir,(char*)va_idx,0);
-   
+  cprintf("spalloc-pte : 0x%x \n" , P2V((PTE_ADDR(*pte))));
+  
   return (void*)P2V((PTE_ADDR(*pte)));
 }
 

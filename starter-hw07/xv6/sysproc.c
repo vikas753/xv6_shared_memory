@@ -59,7 +59,6 @@ sys_sbrk(void)
 extern void* spalloc();
 extern void spfree(void* ptr);
 
-
 void*
 sys_spalloc()
 {  
@@ -80,18 +79,49 @@ sys_spfree()
   return 0;
 }
 
+extern int mutex_init(struct mutex_t*);
+extern int mutex_lock(struct mutex_t*);
+extern int mutex_unlock(struct mutex_t*);
+
+
 int sys_mutex_init(void)
 {
+  int addrSp;
+  if(argint(0,&addrSp) < 0)
+  {
+    return -1;	  
+  }
+  int* addrSpPtr = (int*)addrSp;
+
+  mutex_init((struct mutex_t*)addrSpPtr);
+   
   return 0;	
 }
 
 int sys_mutex_lock(void)
 {
+  int addrSp;
+  if(argint(0,&addrSp) < 0)
+  {
+    return -1;	  
+  }
+  int* addrSpPtr = (int*)addrSp;
+
+  mutex_lock((struct mutex_t*)addrSpPtr);
   return 0;	
 }
 
 int sys_mutex_unlock(void)
-{
+{ 
+  int addrSp;
+  if(argint(0,&addrSp) < 0)
+  {
+    return -1;	  
+  }
+  int* addrSpPtr = (int*)addrSp;
+
+  mutex_unlock((struct mutex_t*)addrSpPtr);
+ 
   return 0;	
 }
 

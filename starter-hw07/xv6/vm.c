@@ -232,6 +232,7 @@ allocuvm(pde_t *pgdir, uint oldsz, uint newsz)
   a = PGROUNDUP(oldsz);
   for(; a < newsz; a += PGSIZE){
     mem = kalloc();
+    cprintf("allocuvm - mem : 0x%x \n" , mem);
     if(mem == 0){
       cprintf("allocuvm out of memory\n");
       deallocuvm(pgdir, newsz, oldsz);
@@ -330,10 +331,12 @@ copyuvm(pde_t *pgdir, uint sz)
     pa = PTE_ADDR(*pte);
     flags = PTE_FLAGS(*pte);
 
-    if(*pte & PTE_S)
+
+    if(flags & PTE_S)
     { 
       // Since it is a shared page , no need to alloc and map 
-      // it again it . Let the loop continue as is . 
+      // it again it . Let the loop continue as is .
+      cprintf("Shared memory !\n"); 
     }
     else
     {
