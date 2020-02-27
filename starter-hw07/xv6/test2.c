@@ -14,10 +14,7 @@ main(int _ac, char* _av[])
   char* t1 = "Alice";
   char* t2 = "Bob";
 
-  printf(1, "Reference memory t1: %p\n", t1); 
-
   char* s1 = spalloc();
-  printf(1, "Allocated memory cln: %p\n", s1);
  
   copy(s1, t1);
   printf(1, "Allocated memory: %p\n", s1);

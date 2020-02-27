@@ -272,19 +272,16 @@ spalloc()
 {
   struct proc *curproc = myproc();
 
-  pde_t* pde;
   pte_t* pte;
 
   int va_idx = curproc->sz;
   growproc(PGSIZE);
-  pde = (pde_t*)&curproc->pgdir[PDX(PGROUNDDOWN(va_idx))];
-  *pde = *pde | PTE_S;
-  cprintf("spalloc-pde : 0x%x \n" , pde);
-
   pte = walkpgdir(curproc->pgdir,(char*)va_idx,0);
-  cprintf("spalloc-pte : 0x%x \n" , P2V((PTE_ADDR(*pte))));
+  void* translatedPteAddr = (void*)P2V(PTE_ADDR(*pte));
+  cprintf("spalloc-pte : 0x%x \n" , translatedPteAddr);
+  *pte = *pte | PTE_S;
   
-  return (void*)P2V((PTE_ADDR(*pte)));
+  return (void*) (va_idx);
 }
 
 extern void spfree(void* ptr);
@@ -295,7 +292,11 @@ extern void spfree(void* ptr);
 void 
 spfree(void* ptr)
 {
-  kfree(ptr);      
+  struct proc *curproc = myproc();
+  pte_t* pte = walkpgdir(curproc->pgdir,(char*)ptr,0);
+  void *freePtr = (void*)P2V(PTE_ADDR(*pte));
+  cprintf("spfree : %p \n" , freePtr);
+  kfree(freePtr);      
 }
 
 
