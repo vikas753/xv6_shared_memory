@@ -263,24 +263,34 @@ extern pte_t * walkpgdir(pde_t *pgdir, const void *va, int alloc);
 
 extern void* spalloc();
 
+
 // Grow the process size by a page
 // Access the Page Directory of it . 
 // Modify the property of that page to be shared
 // Return the page table entry for that allocation
+// Use the first word of the page as a count to maintain
+// how many shared pages have been spawn
 void* 
 spalloc()
 {
   struct proc *curproc = myproc();
 
   pte_t* pte;
-
+  // Virtual address is an offset from the head of page table
   int va_idx = curproc->sz;
   growproc(PGSIZE);
+
+  // Walk through entire page directory to find the page table entry
   pte = walkpgdir(curproc->pgdir,(char*)va_idx,0);
+
+  // Get the memory associated with that page table entry
   void* translatedPteAddr = (void*)P2V(PTE_ADDR(*pte));
-  cprintf("spalloc-pte : 0x%x \n" , translatedPteAddr);
   *pte = *pte | PTE_S;
-  
+
+  // Initialize the counter associated with page
+  int* pageHeadValue = (int*)translatedPteAddr;
+  *pageHeadValue = 1;
+  va_idx = va_idx + sizeof(int);
   return (void*) (va_idx);
 }
 
@@ -292,11 +302,25 @@ extern void spfree(void* ptr);
 void 
 spfree(void* ptr)
 {
+  // find the page table entry from the directory using offset
   struct proc *curproc = myproc();
-  pte_t* pte = walkpgdir(curproc->pgdir,(char*)ptr,0);
-  void *freePtr = (void*)P2V(PTE_ADDR(*pte));
-  cprintf("spfree : %p \n" , freePtr);
-  kfree(freePtr);      
+  pte_t* pte = walkpgdir(curproc->pgdir, (char*)ptr, 0);
+  if((*pte & PTE_S) != 0){
+    uint pa = PTE_ADDR(*pte);
+    if(pa == 0)
+      panic("kfree");
+    char *v = P2V(pa);
+
+  // Decrement the counter gradually to see if it becomes , zero
+    int* pageHeadValue = (int*)v;
+    *pageHeadValue = *pageHeadValue - 1;
+
+    if(*pageHeadValue == 0)
+    {
+      kfree(v);
+    }
+    *pte = 0;
+  }
 }
 
 

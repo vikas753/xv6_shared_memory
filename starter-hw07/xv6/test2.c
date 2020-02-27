@@ -17,7 +17,6 @@ main(int _ac, char* _av[])
   char* s1 = spalloc();
  
   copy(s1, t1);
-  printf(1, "Allocated memory: %p\n", s1);
   
   int cpid;
   if ((cpid = fork())) {

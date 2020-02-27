@@ -266,7 +266,9 @@ deallocuvm(pde_t *pgdir, uint oldsz, uint newsz)
     pte = walkpgdir(pgdir, (char*)a, 0);
     if(!pte)
       a = PGADDR(PDX(a) + 1, 0, 0) - PGSIZE;
-    else if((*pte & PTE_P) != 0){
+    // For shared pages user is responsible for deallocating the
+    // virtual memory so no handling for the same
+    else if(((*pte & PTE_P) != 0) && ((*pte & PTE_S) == 0)){
       pa = PTE_ADDR(*pte);
       if(pa == 0)
         panic("kfree");
@@ -289,7 +291,7 @@ freevm(pde_t *pgdir)
     panic("freevm: no pgdir");
   deallocuvm(pgdir, KERNBASE, 0);
   for(i = 0; i < NPDENTRIES; i++){
-    if(pgdir[i] & PTE_P){
+    if((pgdir[i] & PTE_P) && ((pgdir[i] & PTE_S) == 0)){
       char * v = P2V(PTE_ADDR(pgdir[i]));
       kfree(v);
     }
@@ -334,10 +336,11 @@ copyuvm(pde_t *pgdir, uint sz)
     { 
       // Since it is a shared page , no need to alloc
       // Just map the memory that was allocated previously
-      // to new process page directory ! .
+      // to new process page directory , increment the counter
+      // here to indicate a new process is mapped to this page ! .
+      int* counterVal = (int*)P2V(pa);
+      *counterVal = *counterVal + 1;
 
-      cprintf("Shared memory : %p !\n", (char*)P2V(pa));
-      
       if(mappages(d, (void*)i, PGSIZE, V2P(P2V(pa)), flags) < 0) {
         // Dont try to free shared memory rather just destroy this child !
         goto bad;
