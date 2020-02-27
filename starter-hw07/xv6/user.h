@@ -29,9 +29,9 @@ void* spalloc();
 void spfree(void* ptr);
 
 // Mutext apis
-int mutex_init(struct mutex_t*);
-int mutex_lock(struct mutex_t*);
-int mutex_unlock(struct mutex_t*);
+int mutex_init(mutex_t*);
+int mutex_lock(mutex_t*);
+int mutex_unlock(mutex_t*);
 
 // ulib.c
 int stat(const char*, struct stat*);

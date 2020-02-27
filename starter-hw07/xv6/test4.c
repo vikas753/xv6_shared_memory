@@ -9,7 +9,7 @@ main(int _ac, char* _av[])
 
   long long* count = spalloc();
   long long temp;
-  struct mutex_t* mx = spalloc();
+  mutex_t* mx = spalloc();
   mutex_init(mx);
 
   int cpid;

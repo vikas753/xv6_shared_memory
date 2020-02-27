@@ -11,7 +11,7 @@ copy(char* dst, const char* src)
 int
 main(int _ac, char* _av[])
 {
-  struct mutex_t* mx = spalloc();
+  mutex_t* mx = spalloc();
   mutex_init(mx);
 
   char* t1 = "Alice";

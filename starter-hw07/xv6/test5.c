@@ -8,7 +8,7 @@ int
 main(int _ac, char* _av[])
 {
   long* count = spalloc();
-  struct mutex_t* mx = spalloc();
+  mutex_t* mx = spalloc();
   mutex_init(mx);
 
   int kids[10];

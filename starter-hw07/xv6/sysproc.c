@@ -79,9 +79,9 @@ sys_spfree()
   return 0;
 }
 
-extern int mutex_init(struct mutex_t*);
-extern int mutex_lock(struct mutex_t*);
-extern int mutex_unlock(struct mutex_t*);
+extern int mutex_init(mutex_t*);
+extern int mutex_lock(mutex_t*);
+extern int mutex_unlock(mutex_t*);
 
 
 int sys_mutex_init(void)
@@ -93,7 +93,7 @@ int sys_mutex_init(void)
   }
   int* addrSpPtr = (int*)addrSp;
 
-  mutex_init((struct mutex_t*)addrSpPtr);
+  mutex_init((mutex_t*)addrSpPtr);
    
   return 0;	
 }
@@ -107,7 +107,7 @@ int sys_mutex_lock(void)
   }
   int* addrSpPtr = (int*)addrSp;
 
-  mutex_lock((struct mutex_t*)addrSpPtr);
+  mutex_lock((mutex_t*)addrSpPtr);
   return 0;	
 }
 
@@ -120,7 +120,7 @@ int sys_mutex_unlock(void)
   }
   int* addrSpPtr = (int*)addrSp;
 
-  mutex_unlock((struct mutex_t*)addrSpPtr);
+  mutex_unlock((mutex_t*)addrSpPtr);
  
   return 0;	
 }

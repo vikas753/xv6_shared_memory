@@ -156,7 +156,7 @@ userinit(void)
 #define NULL 0
 
 // Mutext apis
-int mutex_init(struct mutex_t* lock)
+int mutex_init(mutex_t* lock)
 {
   if(lock == NULL)
   {
@@ -170,7 +170,7 @@ int mutex_init(struct mutex_t* lock)
 // Test a byte for it to be set , if it is not set
 // then set and proceed . If set then spin your self in a loop
 // unless other process clears it
-int mutex_lock(struct mutex_t* lock)
+int mutex_lock(mutex_t* lock)
 {
   while(__atomic_test_and_set((char*)lock,__ATOMIC_RELAXED))
   {
@@ -180,7 +180,7 @@ int mutex_lock(struct mutex_t* lock)
   return 0;	
 }
 
-int mutex_unlock(struct mutex_t* lock)
+int mutex_unlock(mutex_t* lock)
 {
   if(lock == NULL)
   {
