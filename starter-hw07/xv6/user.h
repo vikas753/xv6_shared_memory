@@ -1,5 +1,6 @@
 struct stat;
 struct rtcdate;
+struct mutex_t;
 
 // system calls
 int fork(void);
@@ -24,6 +25,13 @@ char* sbrk(int);
 int sleep(int);
 int uptime(void);
 int halt(void);
+void* spalloc();
+void spfree(void* ptr);
+
+// Mutext apis
+int mutex_init(struct mutex_t*);
+int mutex_lock(struct mutex_t*);
+int mutex_unlock(struct mutex_t*);
 
 // ulib.c
 int stat(const char*, struct stat*);

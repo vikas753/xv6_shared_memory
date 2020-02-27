@@ -56,6 +56,45 @@ sys_sbrk(void)
   return addr;
 }
 
+extern void* spalloc();
+extern void spfree(void* ptr);
+
+
+void*
+sys_spalloc()
+{  
+  return (void*)spalloc();
+}
+
+int
+sys_spfree()
+{
+  int addrSp;
+  if(argint(0,&addrSp) < 0)
+  {
+    return 0;	  
+  }
+  int* addrSpPtr = (int*)addrSp;
+
+  spfree(addrSpPtr); 
+  return 0;
+}
+
+int sys_mutex_init(void)
+{
+  return 0;	
+}
+
+int sys_mutex_lock(void)
+{
+  return 0;	
+}
+
+int sys_mutex_unlock(void)
+{
+  return 0;	
+}
+
 int
 sys_sleep(void)
 {

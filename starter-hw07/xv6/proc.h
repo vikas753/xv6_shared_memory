@@ -10,6 +10,12 @@ struct cpu {
   struct proc *proc;           // The process running on this cpu or null
 };
 
+
+struct mutex_t
+{
+  int dummy;	
+};
+
 extern struct cpu cpus[NCPU];
 extern int ncpu;
 

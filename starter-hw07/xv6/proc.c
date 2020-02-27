@@ -20,6 +20,23 @@ extern void trapret(void);
 
 static void wakeup1(void *chan);
 
+// Mutext apis
+int mutex_init(struct mutex_t* lock)
+{
+  return 0;	
+}
+
+int mutex_lock(struct mutex_t* lock)
+{
+  return 0;	
+}
+
+int mutex_unlock(struct mutex_t* lock)
+{
+  return 0;	
+}
+
+
 void
 pinit(void)
 {
@@ -220,6 +237,45 @@ fork(void)
 
   return pid;
 }
+
+extern pte_t * walkpgdir(pde_t *pgdir, const void *va, int alloc);
+
+extern void* spalloc();
+
+// Grow the process size by a page
+// Access the Page Directory of it . 
+// Modify the property of that page to be shared
+// Return the page table entry for that allocation
+void* 
+spalloc()
+{
+ struct proc *curproc = myproc();
+
+ pde_t* pde;
+  pte_t* pte;
+
+  int va_idx = curproc->sz;
+  growproc(PGSIZE);
+  pde = (pde_t*)&curproc->pgdir[PDX(PGROUNDDOWN(va_idx))];
+  *pde = *pde | PTE_S;
+  cprintf("spalloc-pde : 0x%x \n" , pde);
+
+  pte = walkpgdir(curproc->pgdir,(char*)va_idx,0);
+   
+  return (void*)P2V((PTE_ADDR(*pte)));
+}
+
+extern void spfree(void* ptr);
+
+// Just free that particular single page only
+// when the process gets over then it will automatically
+// take care of deallocating virtual memory
+void 
+spfree(void* ptr)
+{
+  kfree(ptr);      
+}
+
 
 // Exit the current process.  Does not return.
 // An exited process remains in the zombie state
