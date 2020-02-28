@@ -32,6 +32,4 @@ SYSCALL(uptime)
 SYSCALL(halt)
 SYSCALL(spalloc)
 SYSCALL(spfree)
-SYSCALL(mutex_init)
-SYSCALL(mutex_lock)
-SYSCALL(mutex_unlock)
+

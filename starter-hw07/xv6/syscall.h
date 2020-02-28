@@ -23,7 +23,4 @@
 #define SYS_halt         22
 #define SYS_spalloc      23
 #define SYS_spfree       24
-#define SYS_mutex_init   25
-#define SYS_mutex_lock   26
-#define SYS_mutex_unlock 27
 

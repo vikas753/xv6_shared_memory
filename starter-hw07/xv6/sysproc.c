@@ -79,52 +79,6 @@ sys_spfree()
   return 0;
 }
 
-extern int mutex_init(mutex_t*);
-extern int mutex_lock(mutex_t*);
-extern int mutex_unlock(mutex_t*);
-
-
-int sys_mutex_init(void)
-{
-  int addrSp;
-  if(argint(0,&addrSp) < 0)
-  {
-    return -1;	  
-  }
-  int* addrSpPtr = (int*)addrSp;
-
-  mutex_init((mutex_t*)addrSpPtr);
-   
-  return 0;	
-}
-
-int sys_mutex_lock(void)
-{
-  int addrSp;
-  if(argint(0,&addrSp) < 0)
-  {
-    return -1;	  
-  }
-  int* addrSpPtr = (int*)addrSp;
-
-  mutex_lock((mutex_t*)addrSpPtr);
-  return 0;	
-}
-
-int sys_mutex_unlock(void)
-{ 
-  int addrSp;
-  if(argint(0,&addrSp) < 0)
-  {
-    return -1;	  
-  }
-  int* addrSpPtr = (int*)addrSp;
-
-  mutex_unlock((mutex_t*)addrSpPtr);
- 
-  return 0;	
-}
-
 int
 sys_sleep(void)
 {

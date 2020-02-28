@@ -106,10 +106,6 @@ extern int sys_uptime(void);
 extern int sys_halt(void);
 extern int sys_spalloc(void);
 extern int sys_spfree(void);
-extern int sys_mutex_init(void);
-extern int sys_mutex_lock(void);
-extern int sys_mutex_unlock(void);
-
 
 
 static int (*syscalls[])(void) = {
@@ -137,10 +133,6 @@ static int (*syscalls[])(void) = {
 [SYS_halt]         sys_halt,
 [SYS_spalloc]      sys_spalloc,
 [SYS_spfree]       sys_spfree,
-[SYS_mutex_init]   sys_mutex_init,
-[SYS_mutex_lock]   sys_mutex_lock,
-[SYS_mutex_unlock] sys_mutex_unlock,
-
 };
 
 void

@@ -104,3 +104,43 @@ memmove(void *vdst, const void *vsrc, int n)
     *dst++ = *src++;
   return vdst;
 }
+
+#define NULL 0
+
+// Mutext apis
+int mutex_init(mutex_t* lock)
+{
+  if(lock == NULL)
+  {
+    return -1;
+  }
+
+  __atomic_clear((char*)lock,__ATOMIC_RELAXED);
+  return 0;	
+}
+
+// Test a byte for it to be set , if it is not set
+// then set and proceed . If set then spin your self in a loop
+// unless other process clears it
+int mutex_lock(mutex_t* lock)
+{
+  while(__atomic_test_and_set((char*)lock,__ATOMIC_RELAXED))
+  {
+    // Keep on spinning in a loop since some other process has acquired
+    // same look  
+  }	  
+  return 0;	
+}
+
+int mutex_unlock(mutex_t* lock)
+{
+  if(lock == NULL)
+  {
+    return -1;
+  }
+
+  __atomic_clear((char*)lock,__ATOMIC_RELAXED);
+  return 0;	
+}
+
+
