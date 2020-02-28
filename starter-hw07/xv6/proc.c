@@ -175,7 +175,7 @@ int mutex_lock(mutex_t* lock)
   while(__atomic_test_and_set((char*)lock,__ATOMIC_RELAXED))
   {
     // Keep on spinning in a loop since some other process has acquired
-    // same look  
+    // same lock  
   }	  
   return 0;	
 }

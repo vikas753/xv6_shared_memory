@@ -15,7 +15,7 @@ main(int _ac, char* _av[])
   char* t2 = "Bob";
 
   char* s1 = spalloc();
- 
+  //printf(1, "Allocated memory: %p\n", s1);
   copy(s1, t1);
   
   int cpid;
